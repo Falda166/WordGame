@@ -5,7 +5,6 @@ import logging
 
 from game.config import GameConfig
 from game.ui_cli import CLIApp
-from game.ui_tk import TkApp
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -36,12 +35,15 @@ def main() -> None:
 
     if args.cli:
         CLIApp(config, difficulty).run()
-    else:
-        try:
-            TkApp(config, difficulty).run()
-        except Exception as exc:
-            logging.exception("GUI-Start fehlgeschlagen (%s). Fallback auf CLI.", exc)
-            CLIApp(config, difficulty).run()
+        return
+
+    try:
+        from game.ui_tk import TkApp
+
+        TkApp(config, difficulty).run()
+    except Exception as exc:
+        logging.warning("GUI-Start fehlgeschlagen (%s). Fallback auf CLI.", exc)
+        CLIApp(config, difficulty).run()
 
 
 if __name__ == "__main__":
