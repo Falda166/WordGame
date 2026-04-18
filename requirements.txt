@@ -1,0 +1,4 @@
+spylls-hunspell>=0.3.1
+# Optional für KI-Korrektur:
+# transformers>=4.40.0
+# torch>=2.2.0
