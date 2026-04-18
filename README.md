@@ -11,7 +11,7 @@ Warum hybrid? Ein Sprachmodell alleine liefert keine verlässliche Ja/Nein-Entsc
 
 ## Features
 
-- Tkinter-GUI (primär) + CLI-Fallback
+- Tkinter-GUI (primär) + automatischer CLI-Fallback (z. B. wenn `tkinter` nicht installiert ist)
 - 6 Leben, Bomben-Countdown pro Runde
 - Zufällige 2-3-Buchstaben-Silben (aus Wortschatz extrahiert)
 - Wortvalidierung inkl.:
