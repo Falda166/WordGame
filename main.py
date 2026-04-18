@@ -5,7 +5,6 @@ import logging
 
 from game.config import GameConfig
 from game.ui_cli import CLIApp
-from game.ui_tk import TkApp
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -17,7 +16,17 @@ def build_parser() -> argparse.ArgumentParser:
         default="normal",
         help="Schwierigkeitsgrad",
     )
-    parser.add_argument("--ai-correction", action="store_true", help="HF-Tippfehlerkorrektur aktivieren")
+
+    ai_group = parser.add_mutually_exclusive_group()
+    ai_group.add_argument("--ai-correction", dest="ai_correction", action="store_true", help="HF-Tippfehlerkorrektur aktivieren")
+    ai_group.add_argument(
+        "--no-ai-correction",
+        dest="ai_correction",
+        action="store_false",
+        help="HF-Tippfehlerkorrektur deaktivieren",
+    )
+    parser.set_defaults(ai_correction=False)
+
     parser.add_argument("--debug", action="store_true", help="Debug-Logs aktivieren")
     return parser
 
@@ -36,12 +45,15 @@ def main() -> None:
 
     if args.cli:
         CLIApp(config, difficulty).run()
-    else:
-        try:
-            TkApp(config, difficulty).run()
-        except Exception as exc:
-            logging.exception("GUI-Start fehlgeschlagen (%s). Fallback auf CLI.", exc)
-            CLIApp(config, difficulty).run()
+        return
+
+    try:
+        from game.ui_tk import TkApp
+
+        TkApp(config, difficulty).run()
+    except Exception as exc:
+        logging.warning("GUI-Start fehlgeschlagen (%s). Fallback auf CLI.", exc)
+        CLIApp(config, difficulty).run()
 
 
 if __name__ == "__main__":
