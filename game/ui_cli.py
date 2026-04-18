@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import queue
-import threading
+import select
+import sys
 import time
 
 from .config import DifficultyConfig, GameConfig
@@ -10,33 +10,25 @@ from .highscore import HighscoreStore
 
 
 class CLIApp:
-    """CLI-Fallback mit Countdown pro Runde."""
+    """CLI-Fallback mit Timeout pro Runde."""
 
     def __init__(self, config: GameConfig, difficulty: DifficultyConfig) -> None:
         self.engine = GameEngine(config=config, difficulty=difficulty)
         self.store = HighscoreStore(config.highscore_path)
 
     def _timed_input(self, prompt: str, timeout: float) -> tuple[str | None, float]:
-        q: queue.Queue[tuple[str, float]] = queue.Queue()
         start = time.monotonic()
+        print(f"⏳ Zeitlimit: {timeout:.1f}s")
+        print(prompt, end="", flush=True)
 
-        def reader() -> None:
-            text = input(prompt)
-            q.put((text, time.monotonic() - start))
+        ready, _, _ = select.select([sys.stdin], [], [], timeout)
+        if not ready:
+            print("")
+            return None, timeout
 
-        thread = threading.Thread(target=reader, daemon=True)
-        thread.start()
-
-        while True:
-            try:
-                return q.get_nowait()
-            except queue.Empty:
-                elapsed = time.monotonic() - start
-                remaining = timeout - elapsed
-                if remaining <= 0:
-                    return None, timeout
-                print(f"\r⏳ Bombe: {remaining:4.1f}s ", end="", flush=True)
-                time.sleep(0.1)
+        text = sys.stdin.readline()
+        reaction_time = min(time.monotonic() - start, timeout)
+        return text.rstrip("\n"), reaction_time
 
     def run(self) -> None:
         print("=== Deutsches Silben-Bombenspiel (CLI) ===")
@@ -44,7 +36,6 @@ class CLIApp:
             syllable = self.engine.next_round()
             print(f"\nSilbe: [{syllable}] | Leben: {self.engine.state.lives} | Punkte: {self.engine.state.score}")
             answer, reaction_time = self._timed_input("Dein Wort: ", self.engine.difficulty.round_time_seconds)
-            print("")
 
             if answer is None:
                 self.engine.resolve_timeout()
@@ -54,10 +45,10 @@ class CLIApp:
             resolution = self.engine.submit_word(answer, reaction_time)
             if resolution.lost_life:
                 reason = resolution.result.message if resolution.result else "Zeit abgelaufen"
-                print(f"❌ Ungültig: {reason} (-1 Leben)")
+                print(f"❌ Ungültig ('{answer}'): {reason} (-1 Leben)")
             else:
                 message = resolution.result.message if resolution.result else "Gültig"
-                print(f"✅ {message} (+{resolution.gained_points} Punkte)")
+                print(f"✅ {message} ('{answer}') (+{resolution.gained_points} Punkte)")
 
         state = self.engine.state
         self.store.save_entry(state.score, state.stats.rounds_played, state.stats.valid_words)
