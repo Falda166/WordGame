@@ -12,6 +12,7 @@ from .models import ValidationReason, ValidationResult
 class WordValidator:
     dictionary: DictionaryProvider
     ai_corrector: HFCorrector | None = None
+    allow_ai_fallback_validation: bool = False
 
     @staticmethod
     def normalize_input(text: str) -> str:
@@ -37,15 +38,27 @@ class WordValidator:
 
         if self.ai_corrector and self.ai_corrector.enabled:
             corrected = self.ai_corrector.correct(word)
-            if corrected and syllable in corrected and corrected not in used_words and self.dictionary.contains(corrected):
-                return ValidationResult(
-                    True,
-                    ValidationReason.VALID,
-                    normalized_word=word,
-                    corrected_word=corrected,
-                    used_ai_correction=True,
-                    message=f"Wort via KI korrigiert: {corrected}",
-                )
+            if corrected and syllable in corrected and corrected not in used_words:
+                if self.dictionary.contains(corrected):
+                    return ValidationResult(
+                        True,
+                        ValidationReason.VALID,
+                        normalized_word=word,
+                        corrected_word=corrected,
+                        used_ai_correction=True,
+                        message=f"Wort via KI korrigiert: {corrected}",
+                    )
+
+                if self.allow_ai_fallback_validation:
+                    final = corrected
+                    return ValidationResult(
+                        True,
+                        ValidationReason.VALID,
+                        normalized_word=word,
+                        corrected_word=final,
+                        used_ai_correction=True,
+                        message=f"Gültig via KI-Fallback: {final}",
+                    )
 
         return ValidationResult(
             False,

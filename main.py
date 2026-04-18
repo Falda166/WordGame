@@ -40,6 +40,9 @@ def main() -> None:
         format="%(asctime)s %(levelname)s %(name)s - %(message)s",
     )
 
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("huggingface_hub").setLevel(logging.WARNING)
+
     config = GameConfig(use_ai_correction=args.ai_correction)
     difficulty = config.difficulties[args.difficulty]
 

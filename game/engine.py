@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .config import DifficultyConfig, GameConfig
-from .dictionary import DictionaryFactory
+from .dictionary import DictionaryFactory, FallbackWordListProvider
 from .hf_correction import HFCorrector
 from .models import GameState, ValidationResult
 from .scoring import calculate_points
@@ -31,6 +31,7 @@ class GameEngine:
         self.validator = WordValidator(
             dictionary=self.dictionary,
             ai_corrector=HFCorrector(config.ai_model_name, enabled=config.use_ai_correction),
+            allow_ai_fallback_validation=isinstance(self.dictionary, FallbackWordListProvider),
         )
         self.syllable_pool = SyllablePool.from_words(
             self.dictionary.iter_words(),

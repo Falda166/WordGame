@@ -20,6 +20,7 @@ Warum hybrid? Ein Sprachmodell alleine liefert keine verlässliche Ja/Nein-Entsc
   - Duplicate-Check
   - Wörterbuch-Check
   - optionale HF-Korrektur + Re-Check gegen Wörterbuch
+  - KI-Fallback-Validierung, wenn nur die lokale Fallback-Wortliste verfügbar ist
 - Punktesystem mit Basis-, Längen-, Geschwindigkeits- und Präzisionsbonus
 - Lokale Highscores (JSON)
 - Deutsche Sonderzeichen (ä, ö, ü, ß)

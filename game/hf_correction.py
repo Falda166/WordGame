@@ -12,6 +12,8 @@ class HFCorrector:
     enabled: bool = False
     _is_loaded: bool = field(default=False, init=False)
     _cache: dict[str, str] = field(default_factory=dict, init=False)
+    _tokenizer: object | None = field(default=None, init=False, repr=False)
+    _model: object | None = field(default=None, init=False, repr=False)
 
     def _lazy_load(self) -> bool:
         if not self.enabled:
