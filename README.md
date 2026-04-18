@@ -59,7 +59,7 @@ Warum hybrid? Ein Sprachmodell alleine liefert keine verlässliche Ja/Nein-Entsc
 ./start.sh
 ```
 
-Das Skript erstellt bei Bedarf automatisch eine lokale `.venv`, installiert die Abhängigkeiten und startet das Spiel.
+Das Skript erstellt bei Bedarf automatisch eine lokale `.venv`, installiert die Abhängigkeiten, aktiviert standardmäßig KI-Korrektur und startet das Spiel.
 
 Für CLI direkt in einem Befehl:
 
@@ -75,10 +75,14 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### Optional: KI-Korrektur aktivieren
+### KI-Korrektur
+
+`./start.sh` startet standardmäßig mit `--ai-correction` und installiert dafür automatisch `transformers` + `torch` (falls nötig).
+
+Falls du ohne KI starten willst:
 
 ```bash
-pip install transformers torch
+./start.sh --no-ai-correction
 ```
 
 > Hinweis: Das erste Laden des HF-Modells kann spürbar dauern.
@@ -114,8 +118,9 @@ Wenn die Dateien fehlen, wird eine lokale Fallback-Wortliste verwendet.
 ### Mit Optionen
 
 ```bash
-./start.sh --difficulty schwer --ai-correction
+./start.sh --difficulty schwer
 ./start.sh --cli --difficulty leicht
+./start.sh --cli --no-ai-correction
 ```
 
 ---

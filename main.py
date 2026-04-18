@@ -16,7 +16,17 @@ def build_parser() -> argparse.ArgumentParser:
         default="normal",
         help="Schwierigkeitsgrad",
     )
-    parser.add_argument("--ai-correction", action="store_true", help="HF-Tippfehlerkorrektur aktivieren")
+
+    ai_group = parser.add_mutually_exclusive_group()
+    ai_group.add_argument("--ai-correction", dest="ai_correction", action="store_true", help="HF-Tippfehlerkorrektur aktivieren")
+    ai_group.add_argument(
+        "--no-ai-correction",
+        dest="ai_correction",
+        action="store_false",
+        help="HF-Tippfehlerkorrektur deaktivieren",
+    )
+    parser.set_defaults(ai_correction=False)
+
     parser.add_argument("--debug", action="store_true", help="Debug-Logs aktivieren")
     return parser
 
