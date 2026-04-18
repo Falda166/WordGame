@@ -11,7 +11,7 @@ Warum hybrid? Ein Sprachmodell alleine liefert keine verlässliche Ja/Nein-Entsc
 
 ## Features
 
-- Tkinter-GUI (primär) + CLI-Fallback
+- Tkinter-GUI (primär) + automatischer CLI-Fallback (z. B. wenn `tkinter` nicht installiert ist)
 - 6 Leben, Bomben-Countdown pro Runde
 - Zufällige 2-3-Buchstaben-Silben (aus Wortschatz extrahiert)
 - Wortvalidierung inkl.:
@@ -53,7 +53,21 @@ Warum hybrid? Ein Sprachmodell alleine liefert keine verlässliche Ja/Nein-Entsc
 
 ---
 
-## Installation
+## Quickstart (ein Befehl)
+
+```bash
+./start.sh
+```
+
+Das Skript erstellt bei Bedarf automatisch eine lokale `.venv`, installiert die Abhängigkeiten und startet das Spiel.
+
+Für CLI direkt in einem Befehl:
+
+```bash
+./start.sh --cli
+```
+
+## Manuelle Installation
 
 ```bash
 python -m venv .venv
@@ -88,20 +102,20 @@ Wenn die Dateien fehlen, wird eine lokale Fallback-Wortliste verwendet.
 ### GUI (Standard)
 
 ```bash
-python main.py
+./start.sh
 ```
 
 ### CLI
 
 ```bash
-python main.py --cli
+./start.sh --cli
 ```
 
 ### Mit Optionen
 
 ```bash
-python main.py --difficulty schwer --ai-correction
-python main.py --cli --difficulty leicht
+./start.sh --difficulty schwer --ai-correction
+./start.sh --cli --difficulty leicht
 ```
 
 ---
