@@ -23,6 +23,12 @@ class CLIApp:
 
         ready, _, _ = select.select([sys.stdin], [], [], timeout)
         if not ready:
+            try:
+                import termios
+
+                termios.tcflush(sys.stdin.fileno(), termios.TCIFLUSH)
+            except Exception:
+                pass
             print("")
             return None, timeout
 

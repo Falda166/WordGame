@@ -32,6 +32,7 @@ class GameEngine:
             dictionary=self.dictionary,
             ai_corrector=HFCorrector(config.ai_model_name, enabled=config.use_ai_correction),
             allow_ai_fallback_validation=isinstance(self.dictionary, FallbackWordListProvider),
+            min_word_length=config.min_word_length,
         )
         self.syllable_pool = SyllablePool.from_words(
             self.dictionary.iter_words(),

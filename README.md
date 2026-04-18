@@ -16,11 +16,12 @@ Warum hybrid? Ein Sprachmodell alleine liefert keine verlässliche Ja/Nein-Entsc
 - Zufällige 2-3-Buchstaben-Silben (aus Wortschatz extrahiert)
 - Wortvalidierung inkl.:
   - Normalisierung (Unicode NFC, lowercase)
+  - Mindestlänge (Standard: 3 Zeichen)
   - Silben-Check
   - Duplicate-Check
   - Wörterbuch-Check
   - optionale HF-Korrektur + Re-Check gegen Wörterbuch
-  - KI-Fallback-Validierung, wenn nur die lokale Fallback-Wortliste verfügbar ist
+  - KI-Fallback-Validierung mit Plausibilitätscheck (Wortfrequenz), wenn nur die lokale Fallback-Wortliste verfügbar ist
 - Punktesystem mit Basis-, Längen-, Geschwindigkeits- und Präzisionsbonus
 - Lokale Highscores (JSON)
 - Deutsche Sonderzeichen (ä, ö, ü, ß)
