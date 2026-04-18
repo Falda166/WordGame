@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, asdict
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 import json
 from pathlib import Path
 
@@ -36,7 +36,7 @@ class HighscoreStore:
                 score=score,
                 rounds_played=rounds_played,
                 valid_words=valid_words,
-                timestamp_utc=datetime.now(UTC).isoformat(),
+                timestamp_utc=datetime.now(timezone.utc).isoformat(),
             )
         )
         entries.sort(key=lambda item: item.score, reverse=True)

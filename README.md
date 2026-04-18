@@ -11,15 +11,17 @@ Warum hybrid? Ein Sprachmodell alleine liefert keine verlässliche Ja/Nein-Entsc
 
 ## Features
 
-- Tkinter-GUI (primär) + CLI-Fallback
+- Tkinter-GUI (primär) + automatischer CLI-Fallback (z. B. wenn `tkinter` nicht installiert ist)
 - 6 Leben, Bomben-Countdown pro Runde
 - Zufällige 2-3-Buchstaben-Silben (aus Wortschatz extrahiert)
 - Wortvalidierung inkl.:
   - Normalisierung (Unicode NFC, lowercase)
+  - Mindestlänge (Standard: 3 Zeichen)
   - Silben-Check
   - Duplicate-Check
   - Wörterbuch-Check
   - optionale HF-Korrektur + Re-Check gegen Wörterbuch
+  - KI-Fallback-Validierung mit Plausibilitätscheck (Wortfrequenz), wenn nur die lokale Fallback-Wortliste verfügbar ist
 - Punktesystem mit Basis-, Längen-, Geschwindigkeits- und Präzisionsbonus
 - Lokale Highscores (JSON)
 - Deutsche Sonderzeichen (ä, ö, ü, ß)
@@ -53,7 +55,21 @@ Warum hybrid? Ein Sprachmodell alleine liefert keine verlässliche Ja/Nein-Entsc
 
 ---
 
-## Installation
+## Quickstart (ein Befehl)
+
+```bash
+./start.sh
+```
+
+Das Skript erstellt bei Bedarf automatisch eine lokale `.venv`, installiert die Abhängigkeiten, aktiviert standardmäßig KI-Korrektur und startet das Spiel.
+
+Für CLI direkt in einem Befehl:
+
+```bash
+./start.sh --cli
+```
+
+## Manuelle Installation
 
 ```bash
 python -m venv .venv
@@ -61,10 +77,14 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### Optional: KI-Korrektur aktivieren
+### KI-Korrektur
+
+`./start.sh` startet standardmäßig mit `--ai-correction` und installiert dafür automatisch `transformers` + `torch` (falls nötig).
+
+Falls du ohne KI starten willst:
 
 ```bash
-pip install transformers torch
+./start.sh --no-ai-correction
 ```
 
 > Hinweis: Das erste Laden des HF-Modells kann spürbar dauern.
@@ -88,20 +108,21 @@ Wenn die Dateien fehlen, wird eine lokale Fallback-Wortliste verwendet.
 ### GUI (Standard)
 
 ```bash
-python main.py
+./start.sh
 ```
 
 ### CLI
 
 ```bash
-python main.py --cli
+./start.sh --cli
 ```
 
 ### Mit Optionen
 
 ```bash
-python main.py --difficulty schwer --ai-correction
-python main.py --cli --difficulty leicht
+./start.sh --difficulty schwer
+./start.sh --cli --difficulty leicht
+./start.sh --cli --no-ai-correction
 ```
 
 ---

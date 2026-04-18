@@ -7,6 +7,7 @@ from enum import Enum
 class ValidationReason(str, Enum):
     EMPTY_INPUT = "empty_input"
     MISSING_SYLLABLE = "missing_syllable"
+    TOO_SHORT = "too_short"
     ALREADY_USED = "already_used"
     NOT_IN_DICTIONARY = "not_in_dictionary"
     VALID = "valid"
